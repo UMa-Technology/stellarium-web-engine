@@ -106,6 +106,7 @@ export default {
         overlap: 10 // 重叠百分比
       },
       mosaicTiles: [], // 存储每个 tile 的样式和信息
+      lastMosaicUpdate: 0,
       // 标记是否通过 jsbridge 设置过时间
       hasSetDateTime: false
     }
@@ -612,6 +613,13 @@ export default {
 
       this.mosaicTiles = tiles
 
+      // 节流发送 mosaic tiles 数据给 native (10fps)
+      const now = Date.now()
+      if (now - this.lastMosaicUpdate > 500) {
+        jsbridge.postMessage('mosaicCenters', this.getMosaicTileCenters())
+        this.lastMosaicUpdate = now
+      }
+
       if (needUpdateFov === false) return
       // 自动调整 FOV 逻辑
       // 计算 bounding box 的宽和高
@@ -781,6 +789,7 @@ export default {
           mosaicConfig: this.mosaicConfig
         }
       this.updateFovBox()
+      console.log('getState', data.showMosaic)
       jsbridge.postMessage('getState', data)
     },
     registerBridgeActions () {

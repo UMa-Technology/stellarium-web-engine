@@ -197,6 +197,12 @@ export default {
   mounted: function () {
     var that = this
 
+    // Disable context menu globally
+    window.addEventListener('contextmenu', (e) => {
+      e.preventDefault()
+      return false
+    })
+
     for (const i in this.$stellariumWebPlugins()) {
       const plugin = this.$stellariumWebPlugins()[i]
       if (plugin.onAppMounted) {
@@ -400,6 +406,12 @@ html, body, #app {
 /* Firefox */
 * {
   scrollbar-width: none;
+  -webkit-touch-callout: none !important; /* iOS Safari */
+  -webkit-user-select: none !important; /* Safari */
+  -khtml-user-select: none !important; /* Konqueror HTML */
+  -moz-user-select: none !important; /* Old versions of Firefox */
+  -ms-user-select: none !important; /* Internet Explorer/Edge */
+  user-select: none !important; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
 }
 
 </style>

@@ -613,6 +613,16 @@ export default {
 
       this.mosaicTiles = tiles
 
+      // 强制触发 iOS WebView 重绘，防止静止时 WKWebView 不合成 DOM 更新
+      this.$nextTick(() => {
+        const el = this.$el
+        if (el) {
+          el.style.opacity = '0.999'
+          const _ = el.offsetHeight // eslint-disable-line no-unused-vars
+          el.style.opacity = '1'
+        }
+      })
+
       // 节流发送 mosaic tiles 数据给 native (10fps)
       const now = Date.now()
       if (now - this.lastMosaicUpdate > 500) {

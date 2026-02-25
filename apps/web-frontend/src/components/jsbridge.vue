@@ -101,8 +101,8 @@ export default {
       // 马赛克网格数据
       showMosaic: false,
       mosaicConfig: {
-        x: 1, // 横向个数
-        y: 1, // 纵向个数
+        x: 2, // 横向个数
+        y: 2, // 纵向个数
         overlap: 10 // 重叠百分比
       },
       mosaicTiles: [], // 存储每个 tile 的样式和信息

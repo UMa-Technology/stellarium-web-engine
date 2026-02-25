@@ -600,7 +600,7 @@ export default {
               height: tileHeightPx + 'px',
               left: screenX + 'px',
               top: screenY + 'px',
-              transform: `translate(-50%, -50%) rotate(${tileRotation}deg)`,
+              transform: `translate(-50%, -50%) rotate(${tileRotation}deg) translateZ(0)`,
               border: '1px dashed rgba(244, 129, 35, 0.7)',
               background: 'transparent',
               display: 'flex',
@@ -620,9 +620,13 @@ export default {
       this.$nextTick(() => {
         const el = this.$el
         if (el) {
-          el.style.opacity = '0.999'
-          const _ = el.offsetHeight // eslint-disable-line no-unused-vars
-          el.style.opacity = '1'
+          // 遍历所有 mosaic-tile 节点，逐个强制重绘
+          const tileEls = el.querySelectorAll('.mosaic-tile')
+          tileEls.forEach(tileEl => {
+            tileEl.style.webkitTransform = tileEl.style.webkitTransform || ''
+            // eslint-disable-next-line no-void
+            void tileEl.offsetHeight // eslint-disable-line no-unused-expressions
+          })
         }
       })
 
@@ -1500,6 +1504,9 @@ export default {
 
 .mosaic-tile {
   pointer-events: none;
+  will-change: transform;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 .mosaic-label {
@@ -1509,5 +1516,10 @@ export default {
   text-shadow: 0 0 3px black, 0 0 6px black;
   user-select: none;
   pointer-events: none;
+  will-change: transform;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 </style>

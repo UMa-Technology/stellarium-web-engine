@@ -126,6 +126,31 @@ Module.afterInit(function() {
       }
     });
 
+    // Handle touchcancel: iOS fires this instead of touchend when system
+    // gestures (e.g. multitasking swipe) intercept touch events.
+    // Without this, touch points remain "down" in the C gesture state machine,
+    // causing it to get stuck and stop accepting new gestures.
+    canvas.addEventListener('touchcancel', function(e) {
+      var rect = canvas.getBoundingClientRect();
+      for (var i = 0; i < e.changedTouches.length; i++) {
+        var id = e.changedTouches[i].identifier;
+        var relX = e.changedTouches[i].pageX - rect.left;
+        var relY = e.changedTouches[i].pageY - rect.top;
+        Module._core_on_mouse(id, 0, relX, relY, 1);
+      }
+    });
+
+    // Fallback: when the page regains visibility (e.g. app returns from
+    // background), force-release all touch points to recover from any
+    // stuck gesture state that touchcancel might have missed.
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) {
+        Module._core_on_mouse(0, 0, 0, 0, 0);
+        Module._core_on_mouse(1, 0, 0, 0, 0);
+        mouseDown = false;
+      }
+    });
+
     function getMouseWheelDelta(event) {
       var delta = 0;
       switch (event.type) {

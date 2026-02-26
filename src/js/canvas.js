@@ -139,7 +139,7 @@ Module.afterInit(function() {
         var relY = e.changedTouches[i].pageY - rect.top;
         Module._core_on_mouse(id, 0, relX, relY, 1);
       }
-    });
+    }); 
 
     // Fallback: when the page regains visibility (e.g. app returns from
     // background), force-release all touch points to recover from any
@@ -187,6 +187,20 @@ Module.afterInit(function() {
   };
 
   setupMouse();
+
+  // Handle WebGL context loss (common on iOS when GPU memory is under pressure).
+  // When context is lost, all GL resources (shaders, textures, VBOs) become invalid.
+  // The C/WASM layer caches GL handles that cannot be hot-restored, so we reload
+  // the page when the context is restored to rebuild everything from scratch.
+  var canvas = Module.canvas;
+  canvas.addEventListener('webglcontextlost', function(e) {
+    console.warn('[SWE] WebGL context lost');
+    e.preventDefault(); // Allow the browser to attempt context restoration
+  });
+  canvas.addEventListener('webglcontextrestored', function() {
+    console.warn('[SWE] WebGL context restored, reloading page...');
+    location.reload();
+  });
 
   // Kickoff rendering at max FPS, normally 60 FPS on a browser.
   window.requestAnimationFrame(render)

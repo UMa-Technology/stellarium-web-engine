@@ -1041,6 +1041,14 @@ export default {
             return
           }
 
+          // 如果传入了 fovX/fovY，更新 targetFovX/targetFovY
+          if (config.fovX !== undefined) {
+            this.targetFovX = this.getFovLimit(Number(config.fovX))
+          }
+          if (config.fovY !== undefined) {
+            this.targetFovY = this.getFovLimit(Number(config.fovY))
+          }
+
           // 支持 rotation 和 angle 两种字段名，与 toggleCenterFov 保持一致
           const rotation = config.rotation !== undefined ? Number(config.rotation) : (config.angle !== undefined ? Number(config.angle) : null)
           this.mosaicConfig = { x, y, overlap, rotation }

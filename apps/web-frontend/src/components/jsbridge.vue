@@ -265,7 +265,8 @@ export default {
         background: 'rgba(244, 129, 35, 0.1)',
         border: '1px solid rgba(244, 129, 35, 0.7)',
         borderRadius: this.isCenterCircle ? '50%' : '0',
-        transform: `rotate(${angleDeg}deg)`,
+        transform: `rotate(${angleDeg}deg) translateZ(0)`,
+        willChange: 'transform',
         pointerEvents: 'none'
       }
     },
@@ -405,7 +406,8 @@ export default {
         background: 'rgba(60, 131, 255, 0.1)',
         border: '1px solid rgba(60, 131, 255, 0.7)',
         borderRadius: isCircle ? '50%' : '0',
-        transform: `translate(-50%, -50%) rotate(${angleDeg}deg)`,
+        transform: `translate(-50%, -50%) rotate(${angleDeg}deg) translateZ(0)`,
+        willChange: 'transform',
         left: screenX + 'px',
         top: screenY + 'px',
         display: 'block',
@@ -603,8 +605,9 @@ export default {
               left: screenX + 'px',
               top: screenY + 'px',
               transform: `translate(-50%, -50%) rotate(${tileRotation}deg) translateZ(0)`,
+              willChange: 'transform',
               border: '1px dashed rgba(244, 129, 35, 0.7)',
-              background: 'transparent',
+              background: 'rgba(244, 129, 35, 0.1)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -1507,6 +1510,8 @@ export default {
   will-change: transform;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 .mosaic-label {
@@ -1516,10 +1521,5 @@ export default {
   text-shadow: 0 0 3px black, 0 0 6px black;
   user-select: none;
   pointer-events: none;
-  will-change: transform;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
 }
 </style>
